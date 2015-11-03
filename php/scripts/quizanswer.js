@@ -8,9 +8,6 @@
 // When running on WIFI network @ home
 var socketServer = 'localhost'
 
-// When running on Razri phone hotspot
-//var socketServer = '192.168.43.44'
-
 function prependMessageFadeIn(data) {
     $('<div data-role="collapsible" style="display: none"><h3>' + data.header + '</h3><p>' + data.msg + '</p></div>').prependTo("#content")
     $('#content').find('div[data-role=collapsible]').collapsible({
@@ -26,27 +23,32 @@ $(document).ready(function () {
     var socket = io.connect('//' + socketServer + ':3000/');
 
     socket.on('welcome', function (data) {
-        //$('#messages').append('<li>' + data.message + '</li>');
         console.log("Socket connection successful")
-        socket.emit('i am client', {
-            data: 'foo!'
+        socket.emit('NewTeam', {
+            teamname: $('#teamname').val()
         });
     });
 
-
- 
     socket.on('error', function () {
         console.error(arguments)
     });
     socket.on('message', function (data) {
         console.log(JSON.stringify(data))
     });
-
+   
     $('form').submit(function () {
-        socket.emit('chat message', $('#teamname').val() + " answered: " + $('#m').val());
+        var myAnswer={};
+        myAnswer.Team = $('#teamname').val();
+        myAnswer.AnswerText = $('#m').val();
+        socket.emit('chat message', myAnswer);
         $('#m').val('');
         return false;
+        //TODO: Block the screen with a div
     });
+    
+    socket.on('newQuestion', function(){
+        // TODO - raise the curtain, increment question #
+    })
 
 })
 

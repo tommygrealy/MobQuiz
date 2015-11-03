@@ -19,11 +19,11 @@ function prependMessageFadeIn(data) {
     $('#content').find('div[style="display: none"]').show('slow')
 }
 
-
+var socket;
 
 $(document).ready(function () {
     //loadinfo(10);
-    var socket = io.connect('//' + socketServer + ':3000/');
+    socket = io.connect('//' + socketServer + ':3000/');
 
     socket.on('welcome', function (data) {
         //$('#messages').append('<li>' + data.message + '</li>');
@@ -33,15 +33,13 @@ $(document).ready(function () {
         });
     });
 
+    socket.on('NewTeam', function(data){
+        console.log("New team: "+JSON.stringify(data));
+    })
 
     socket.on('chat message', function (data) {
-        //console.log(data);
-//        mymessage = {
-//            header: data.header,
-//            msg: data.msg    
-//        }
         addAnswer(data)
-        //alert(JSON.stringify(myNewMsg))
+        console.log("Answer sent - " + JSON.stringify(data))
     });
     socket.on('error', function () {
         console.error(arguments)
@@ -50,22 +48,29 @@ $(document).ready(function () {
         console.log(JSON.stringify(data));
     });
 
-    $('form').submit(function () {
-        socket.emit('chat message', $('#teamname').val() + " answered: " + $('#m').val());
-        $('#m').val('');
-        return false;
-    });
 
 })
 
 
 function addAnswer(data) {
+    teamNameStripped=data.Team.replace(/\s+/g, '');
+    divId='answerFrom_'+ teamNameStripped;
     console.log("Adding elements from: " + JSON.stringify(data));
-    $('<div data-role="collapsible"><h3>' + data + '</h3><p>' +
-            '<button>Accept Answer</button><button>Reject Answer</button>'+
-            '</p></div>').prependTo("#answers")
+    $('<div data-role="collapsible" id="'+divId+'"><h3>' + data.Team + ' answered: <strong>'+ data.AnswerText +'</strong></h3><p>' +
+            '<button onclick = "acceptAns(\''+ data.Team +'\');$('+divId+').fadeOut()" >Accept Answer</button><button onclick = "rejectAns(\''+ data.Team+'\');$('+divId+').fadeOut()">Reject Answer</button>'+
+            '</p></div>').appendTo("#answers")
     $('#content').find('div[data-role=collapsible]').collapsible({
         refresh: true
     });
     //$('#content').find('div[style="display: none"]').show('slow')
+}
+
+function acceptAns(team){
+    console.log ("Answer marked as CORRECT for team:" +team)
+    socket.emit("AnswerChecked", {"team":team,"decision":"correct"})
+}
+
+function rejectAns(team){
+    console.log ("Answer marked as INCORRECT for team:" +team)
+    socket.emit("AnswerChecked", {"team":team,"decision":"incorrect"})
 }
