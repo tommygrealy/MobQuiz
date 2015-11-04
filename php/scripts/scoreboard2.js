@@ -43,7 +43,11 @@ $(document).ready(function () {
         addNewTeam(data.teamname);
     })
 
-
+    socket.on('NextQuestion', function(data){
+        console.log("Server sent next question command (now at question#: "+data.QuestionNumber+")")
+        $('#liveFeedTbl').empty();
+        $('#qnum').html(data.QuestionNumber);
+     })
 
     console.log(scoreboard);
 

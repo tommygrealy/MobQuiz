@@ -27,6 +27,12 @@ io.on('connection', function(socket){
 	io.emit("AnswerChecked", data);
   })
   
+  socket.on('NextQuestion', function(data){
+	console.log("QM Moved to next question");
+	io.emit("NextQuestion", data);
+  })
+  
+  
 });
 
 

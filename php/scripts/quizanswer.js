@@ -35,6 +35,12 @@ $(document).ready(function () {
     socket.on('message', function (data) {
         console.log(JSON.stringify(data))
     });
+    
+    socket.on('NextQuestion', function(data){
+        console.log("Server sent next question command (now at question#: "+data.QuestionNumber+")")
+        $('#qnum').html(data.QuestionNumber);
+        $('form').fadeIn();
+    })
    
     $('form').submit(function () {
         var myAnswer={};
@@ -42,13 +48,13 @@ $(document).ready(function () {
         myAnswer.AnswerText = $('#m').val();
         socket.emit('chat message', myAnswer);
         $('#m').val('');
+        $('form').fadeOut();
         return false;
+        
         //TODO: Block the screen with a div
     });
     
-    socket.on('newQuestion', function(){
-        // TODO - raise the curtain, increment question #
-    })
+    
 
 })
 

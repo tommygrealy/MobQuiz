@@ -21,6 +21,8 @@ function prependMessageFadeIn(data) {
 
 var socket;
 
+var questionNum=1;
+
 $(document).ready(function () {
     //loadinfo(10);
     socket = io.connect('//' + socketServer + ':3000/');
@@ -48,7 +50,11 @@ $(document).ready(function () {
         console.log(JSON.stringify(data));
     });
 
-
+    $('#btnNextQ').click(function(){
+        questionNum++;
+        var data={"QuestionNumber":questionNum};
+        socket.emit('NextQuestion',data);
+    })
 })
 
 
