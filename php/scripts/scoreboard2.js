@@ -10,7 +10,6 @@ $(document).ready(function () {
 
     var pointsAvailable = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    var questionNumber = 1;
 
 
 //socket.io must be loaded at this point.
@@ -47,6 +46,7 @@ $(document).ready(function () {
         console.log("Server sent next question command (now at question#: "+data.QuestionNumber+")")
         $('#liveFeedTbl').empty();
         $('#qnum').html(data.QuestionNumber);
+        pointsAvailable = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
      })
 
     console.log(scoreboard);
@@ -87,18 +87,10 @@ $(document).ready(function () {
             return 1;
     }
 
-    function newQuestionReset()
-    {
-        //call when newQuestion emmited from qm
-        questionNumber++;
-        pointsAvailable = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
-        $('#liveFeedTbl').empty();
-    }
 
     function reDrawScoreboard()
     {
         sortScoreboard();
-        //html stuff 
         $('#scoreboard').empty();
         for (var i in scoreboard) {
             $('#scoreboard').append("<tr><td>" + scoreboard[i].Name + "</td><td>" + scoreboard[i].Score + "</td></tr>")
@@ -108,18 +100,23 @@ $(document).ready(function () {
     }
 
     function sortScoreboard() {
-
+        scoreboard.sort(function(a, b) {
+        var x = a["Score"]; var y = b["Score"];
+        return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+    })
     }
 
 
 
-    function addAnswerToLiveFeed(data) {
 
-    }
 
 //TODO: Save and Recover Scoreboard State - this function should exist on the server and listen for scoreboard messages emmitted from here
 //TODO: 
-    function recoverScoreBoard() {
+    function saveScoreBoard(){
+   
+    }
+
+    function loadScoreBoard() {
         //TODO: this fn will run when a "recoverScoreboard" event is recieved from the server. 
         //said event is triggered by the quizmaster hitting a "recover" button in Quizmaster.html
 
