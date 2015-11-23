@@ -6,7 +6,7 @@
 //setInterval(function(){loadinfo(5)},5000)
 
 // When running on WIFI network @ home
-var socketServer = 'localhost'
+var socketServer = window.location.hostname;
 
 // When running on Razri phone hotspot
 //var socketServer = '192.168.43.44'
@@ -54,6 +54,13 @@ $(document).ready(function () {
         questionNum++;
         var data={"QuestionNumber":questionNum};
         socket.emit('NextQuestion',data);
+        $('#qnum').html(questionNum);
+    })
+    
+    $('#btnNextPic').click(function(){
+        var data={"PictureNumber":$('#picNum').val()};
+        socket.emit('NextPicture',data);
+        console.log("Sending: " + JSON.stringify(data));
     })
 })
 

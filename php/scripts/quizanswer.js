@@ -6,7 +6,7 @@
 //setInterval(function(){loadinfo(5)},5000)
 
 // When running on WIFI network @ home
-var socketServer = 'localhost'
+var socketServer = window.location.hostname;
 
 function prependMessageFadeIn(data) {
     $('<div data-role="collapsible" style="display: none"><h3>' + data.header + '</h3><p>' + data.msg + '</p></div>').prependTo("#content")

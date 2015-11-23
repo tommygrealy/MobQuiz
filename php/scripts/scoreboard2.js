@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var socketServer = "localhost";
+    var socketServer = window.location.hostname;
     var socket = io.connect('//' + socketServer + ':3000/');
 
 
@@ -8,7 +8,7 @@ $(document).ready(function () {
     var scoreboard = [];
 
 
-    var pointsAvailable = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
+    var pointsAvailable = [15, 12, 10, 8, 6, 5, 4, 3, 2, 1]
 
 
 
@@ -34,6 +34,7 @@ $(document).ready(function () {
         else {
             $(elementToUpdate).html('<span style="color:red">INCORRECT</span>');
         }
+        saveScoreBoard();
         reDrawScoreboard();
     })
 
@@ -42,12 +43,21 @@ $(document).ready(function () {
         addNewTeam(data.teamname);
     })
 
-    socket.on('NextQuestion', function(data){
-        console.log("Server sent next question command (now at question#: "+data.QuestionNumber+")")
+    socket.on('NextQuestion', function (data) {
+
+        console.log("Server sent next question command (now at question#: " + data.QuestionNumber + ")")
         $('#liveFeedTbl').empty();
         $('#qnum').html(data.QuestionNumber);
-        pointsAvailable = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
-     })
+        pointsAvailable = [15, 12, 10, 8, 6, 5, 4, 3, 2, 1];
+    })
+
+    socket.on('ScoreboardRecover', function (data) {
+        if (confirm("Recover Scoreboard Y/N?")) {
+            console.log("Scoreboard recovery msg received: " + JSON.stringify(data))
+            scoreboard = data;
+            reDrawScoreboard();
+        }
+    })
 
     console.log(scoreboard);
 
@@ -100,10 +110,11 @@ $(document).ready(function () {
     }
 
     function sortScoreboard() {
-        scoreboard.sort(function(a, b) {
-        var x = a["Score"]; var y = b["Score"];
-        return ((x > y) ? -1 : ((x < y) ? 1 : 0));
-    })
+        scoreboard.sort(function (a, b) {
+            var x = a["Score"];
+            var y = b["Score"];
+            return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+        })
     }
 
 
@@ -112,8 +123,8 @@ $(document).ready(function () {
 
 //TODO: Save and Recover Scoreboard State - this function should exist on the server and listen for scoreboard messages emmitted from here
 //TODO: 
-    function saveScoreBoard(){
-   
+    function saveScoreBoard() {
+        socket.emit("SaveScoreboard", scoreboard);
     }
 
     function loadScoreBoard() {

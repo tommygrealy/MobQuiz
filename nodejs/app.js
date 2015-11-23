@@ -1,11 +1,25 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var fs = require('fs');
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html')
 });
 
+app.get('/recoverScoreboard', function(req, res){
+	fs.readFile('latest_scoreboard.json', 'utf8', function (err, data) {
+		if (err) {
+			res.send("fail");
+		}
+		else{
+			var recoveredScoreboard=JSON.parse(data);
+			io.emit("ScoreboardRecover",recoveredScoreboard)
+			console.log("Recovered: " + JSON.stringify(recoveredScoreboard));
+			res.send("ok");
+		}
+	});
+}) 
 
 io.on('connection', function(socket){
   io.emit('welcome')
@@ -32,8 +46,19 @@ io.on('connection', function(socket){
 	io.emit("NextQuestion", data);
   })
   
+  socket.on('SaveScoreboard', function(data){
+	 fs.writeFile("latest_scoreboard.json", JSON.stringify(data), 'utf8');
+  })
+  
+  socket.on('NextPicture', function(data){
+	console.log("QM Moved to next picture");
+	io.emit("NextPicture", data);
+  })
+  
   
 });
+
+
 
 
 http.listen(3000, function(){
