@@ -32,13 +32,22 @@ and open the template in the editor.
                     <div class="row bg-info"><p class="h3 text-center text-info" ><?php echo $teamname; ?> </p>
 
                     </div>
-                    <form action="">
+                    <form action="" style="text-align: center;">
                         <br> <h4>Input your answer to Question #<span id='qnum'>1</span></h4>
                         <input type="text" class="input-lg" id="m" autocomplete="off" /><br>
                         <input type="hidden" id="teamname" value="<?php echo $teamname; ?>"/>
                         <div class="row">&nbsp;</div>
                         <button class="btn-lg">Send</button>
                     </form>
+                    <!--Footer -->
+                    <div class="nav navbar-fixed-bottom text-left"  style="background-color: #fff;"> 
+                        <div class="row well-sm">
+                            <div class="col-lg-8 col-lg-offset-2 well-transparent"> 
+                                <span class="text-info">Developed by:</span>
+                                <img src="images/flex.png">
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

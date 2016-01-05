@@ -30,8 +30,10 @@ $(document).ready(function () {
         var picUrl = "images/picture_round/pic_" + data.PictureNumber + ".jpg"
         console.log("Pic to load: " + picUrl);
         //TODO: Dynamically load pic into a full screen div (blank out the prev pic first)
+        //$('#imgcontainer').fadeOut('slow')
         $('#imgcontainer').empty();
         loadImage(picUrl, '#imgcontainer')
+       // $('#imgcontainer').fadeIn('slow');
     })
     
     function loadImage(path, target) {
